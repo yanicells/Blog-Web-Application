@@ -1,24 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Blog Glob</title>
+    <link rel="stylesheet" href="/style.css">
+    <title>Blog</title>
 </head>
-<body>
-    <h1 class="text-center bg-amber-300">Welcome to the Blog!</h1>
-    
-    <div>
-        <h2>Featured Articles</h2>=
-    </div>
-    
-    <div>
-        <h2>New Articles</h2>
-    </div>
 
-    <div>
-        <h2>Older Articles</h2>
-    </div>
+<body class="min-h-screen flex flex-col bg-slate-900">
+    <%- include("partials/header.ejs") %>
+        <main class="flex-1 flex flex-col items-center">
+            <% if(locals.article){ %>
+                <% for(let i=0; i < article.length; i++){ %>
+                    <div class="bg-slate-800 text-amber-100 rounded-3xl p-10 text-center m-4 w-3/4">
+                        <h2 class="text-5xl font-semibold pb-4">
+                            <%= article[i].title %>
+                        </h2>
+                        <p class="font-medium pb-4">
+                            <%= article[i].body %>
+                        </p>
+                        <a href="/view/<%= i %>">
+                            <button class="btn">Open Post</button>
+                        </a>
+                    </div>
+                    <% } %>
+                        <% } %>
+        </main>
+    <footer class="mt-auto">
+        <%- include("partials/footer.ejs") %>
+    </footer>
 </body>
+
 </html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title>Document</title>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-900">
+    <%- include("partials/header.ejs") %>
+
+    <main class="flex-1">
+        <%if(locals.index){%>
+            <p>
+                <%= article[index].body%>
+            </p>
+            <form action="/update/<%= index %>" method="POST">
+                <input type="text" name="articleTitle" value="<%=  article[index].title%>">
+                <input type="text" name="textBody" value="<%=  article[index].body%>">
+                <input type="submit" value="OK">
+            </form>
+            <%}else{%>
+                <form action="/submit" method="POST">
+                    <input type="text" name="articleTitle" placeholder="Title">
+                    <input type="text" name="textBody" placeholder="Article">
+                    <input type="submit" value="OK">
+                </form>
+                <%}%>
+    </main>
+
+    <footer class="mt-auto">
+        <%- include("partials/footer.ejs") %>
+    </footer>
+</body>
+
+</html>
+
+    

@@ -1,5 +1,5 @@
 @import "tailwindcss";
 
-h1 {
-    @apply text-3xl font-bold underline;
+.btn{
+    @apply bg-white text-black font-semibold rounded-2xl px-5
 }

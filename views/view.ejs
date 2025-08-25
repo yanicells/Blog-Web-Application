@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title>Document</title>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-900">
+    <%- include("partials/header.ejs") %>
+    <main class="flex-1">
+    <h1>
+        <%= article[index].title %>
+    </h1>
+    <p>
+        <%= article[index].body %>
+    </p>
+    
+    <a href="/create/<%= index %>">
+        <button>
+            Edit Post
+        </button>
+    </a>
+    
+    <a href="/delete/<%= index %>">
+        <button>
+            Delete Post
+        </button>
+    </a>
+    
+    <a href="/">Back to Home</a>
+    </main>
+    <footer class="mt-auto">
+        <%- include("partials/footer.ejs") %>
+    </footer>
+</body>
+
+</html>
