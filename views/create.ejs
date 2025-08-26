@@ -9,23 +9,29 @@
 <body class="min-h-screen flex flex-col bg-slate-900 text-white">
     <%- include("partials/header.ejs") %>
 
-    <main class="flex-1">
-        <%if(locals.index){%>
-            <p>
-                <%= article[index].body%>
-            </p>
-            <form action="/update/<%= index %>" method="POST">
-                <input type="text" name="articleTitle" value="<%=  article[index].title%>">
-                <input type="text" name="textBody" value="<%=  article[index].body%>">
-                <input type="submit" value="OK">
-            </form>
-            <%}else{%>
-                <form action="/submit" method="POST">
-                    <input type="text" name="articleTitle" placeholder="Title">
-                    <input type="text" name="textBody" placeholder="Article">
-                    <input type="submit" value="OK">
-                </form>
+    <main class="flex flex-1 items-center justify-center p-10">
+        <div class="flex flex-row justify-center w-3/4 bg-slate-800 rounded-3xl p-10">
+            <%if(locals.index){%>
+                <div class="w-screen flex flex-col items-center justify-center">
+                    <form action="/update/<%= index %>" method="POST" class="w-3/4">
+                        <h2 class="text-5xl font-semibold text-center pb-4">Edit Post</h2>
+                        <div class="form title"><input type="text" name="articleTitle" value="<%=  article[index].title%>" placeholder="Title"></div>
+                        <div class="form body"><input type="text" name="textBody" value="<%=  article[index].body%>" placeholder="Article"></div>
+                        <div class="flex justify-center m-4"><input class="btn" type="submit" value="Save"></div>
+                    </form>
+                </div>
+
+                <%}else{%>
+                    <div class="w-screen flex flex-col items-center justify-center">
+                        <form action="/submit" method="POST" class="w-3/4">
+                            <h2 class="text-5xl font-semibold text-center pb-4">Create Post</h2>
+                            <div class="form title"><input type="text" name="articleTitle" placeholder="Title"></div>
+                            <div class="form body"><input type="text" name="textBody" placeholder="Article"></div>
+                            <div class="flex justify-center m-4"><input class="btn" type="submit" value="Publish"></div>
+                        </form>
+                    </div>
                 <%}%>
+        </div>
     </main>
 
     <footer class="mt-auto">

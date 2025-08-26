@@ -9,28 +9,60 @@
 <body class="min-h-screen flex flex-col bg-slate-900 text-white">
     <%- include("partials/header.ejs") %>
     <main class="flex-1">
-    <h1>
+    <h1 class="text-5xl font-semibold text-center pb-4">
         <%= article[index].title %>
     </h1>
-    <p>
+    <p class="text-2xl text-center pb-4">
         <%= article[index].body %>
     </p>
+
+    <p class="text-2xl text-center pb-4">
+        Comments:
+    </p>
+    <div class="bg-slate-700 rounded-2xl">
+        <% console.log(article[index]);%>
+
+        <%if(article[index].comment.length > 0){%>
+            <% article[index].comment.forEach(comment=> { %>
+                <p class="text-2xl text-center pb-4">
+                    <%= comment.username %>: <%= comment.textBody %>
+                </p>
+                <% }) %>
+        <%}%>
+    </div>
+    
 
     <%if(index == 0 || index == 1) {%>
     <%} else {%>
         <a href="/create/<%= index %>">
-            <button>
+            <button class="btn">
                 Edit Post
             </button>
         </a>
         <a href="/delete/<%= index %>">
-            <button>
+            <button class="btn">
                 Delete Post
             </button>
         </a>
     <%}%>
     
-    <a href="/">Back to Home</a>
+    <a href="/" class="btn">Back to Home</a>
+    <a href="/comment/<%= index %>">
+        <button class="btn">
+            Add comment
+        </button>
+    </a>
+    <a href="/like/<%= index %>">
+        <button class="btn">
+            Like
+        </button>
+    </a>
+
+    <p>
+        <p class="text-2xl text-center pb-4">
+            Likes: <%= article[index].likes%>
+        </p>
+    </p>
     </main>
     <footer class="mt-auto">
         <%- include("partials/footer.ejs") %>

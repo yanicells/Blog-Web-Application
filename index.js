@@ -5,15 +5,19 @@ import { localsName } from "ejs";
 let articles = [
   {
     title: "First Article",
-    body: "This is the body of the first article."
+    body: "This is the body of the first article.",
+    comment: [],
+    likes: 0
   },
   {
     title: "Second Article",
-    body: "This is the body of the second article."
+    body: "This is the body of the second article.",
+    comment: [],
+    likes: 0
   }
 ]
 const app = express();
-const port = 3000;
+const port = 5500;
 
 app.use(express.static("public"));
 
@@ -38,6 +42,17 @@ app.get("/create/:id", (req, res) =>{
   }
 });
 
+app.get("/comment/:id", (req, res) =>{
+  const id = req.params.id;
+  console.log(articles[id]);
+  
+  if (id) {
+    res.render("comment.ejs", {index: id });
+  } else {
+    res.status(404).send("Article not found");
+  }
+});
+
 app.post("/submit", (req, res) => {
   console.log(req.body);
   addArticles(req.body["articleTitle"], req.body["textBody"])
@@ -45,18 +60,44 @@ app.post("/submit", (req, res) => {
 });
 
 app.post("/update/:id", (req, res) => {
-  const id = req.params.id;
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || !articles[id]) {
+    return res.status(404).send("Article not found");
+  }
   articles[id] = {
     title: req.body.articleTitle,
-    body: req.body.textBody
+    body: req.body.textBody,
+    comment: articles[id].comment,
+    likes: articles[id].likes
   };
-  res.redirect("/");
+  res.redirect(`/view/${id}`);
 });
 
-app.get("/delete/:id", (req, res) => {
+app.post("/comment/:id", (req, res) => {
   const id = req.params.id;
-  articles.splice(id, 1);
-  res.redirect("/");
+
+  articles[id].comment.push({
+    username: req.body.username,
+    textBody: req.body.textBody
+  });
+  console.log(articles);
+  res.redirect(`/view/${id}`);
+});
+
+app.get("/like/:id", (req, res) =>{
+  const id = req.params.id;
+  
+  articles[id].likes++;
+  console.log(articles);
+  res.redirect(`/view/${id}`);
+});
+
+app.post("/like/:id", (req, res) => {
+  const id = req.params.id;
+  
+  articles[id].likes++;
+  console.log(articles);
+  res.redirect(`/view/${id}`);
 });
 
 app.get("/view/:id", (req, res) => {
@@ -73,5 +114,5 @@ app.listen(port, () => {
 });
 
 function addArticles(titleArticle, bodyArticle){
-  articles.push({title: titleArticle, body: bodyArticle})
+  articles.push({title: titleArticle, body: bodyArticle, comment: [], likes: 0})
 }

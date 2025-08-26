@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title>Document</title>
+</head>
+
+<body class="min-h-screen flex flex-col bg-slate-900 text-white">
+    <%- include("partials/header.ejs") %>
+
+        <main class="flex flex-1 items-center justify-center p-10">
+            <h2 class="text-5xl font-semibold text-center pb-4">Add Comment</h2>
+            <form action="/comment/<%= index %>" method="POST">
+                <div class="form body"><input type="text" name="username" placeholder="Username"></div>
+                <div class="form body"><input type="text" name="textBody" placeholder="Comment"></div>
+                <div class="flex justify-center m-4"><input class="btn" type="submit" value="Comment"></div>
+            </form>
+        </main>
+
+        <footer class="mt-auto">
+            <%- include("partials/footer.ejs") %>
+        </footer>
+</body>
+
+</html>
