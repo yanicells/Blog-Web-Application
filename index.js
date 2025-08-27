@@ -109,6 +109,12 @@ app.get("/view/:id", (req, res) => {
   }
 });
 
+app.get("/delete/:id", (req, res) => {
+  const id = req.params.id;
+  articles.splice(id, 1);
+  res.redirect("/");
+});
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
