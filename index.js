@@ -11,7 +11,7 @@ let articles = [
   },
   {
     title: "Second Article",
-    body: "This is the body of the second article.",
+    body: "This is the body of the second article. Ayo will this completely fit the entire thing tho?",
     comment: [],
     likes: 0
   }
