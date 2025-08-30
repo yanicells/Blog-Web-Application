@@ -11,14 +11,44 @@
 <body class="min-h-screen flex flex-col bg-slate-900 text-white">
     <%- include("partials/header.ejs") %>
 
-        <main class="flex flex-1 items-center justify-center p-10">
-            <h2 class="text-5xl font-semibold text-center pb-4">Add Comment</h2>
-            <form action="/comment/<%= index %>" method="POST">
-                <div class="form body"><input type="text" name="username" placeholder="Username"></div>
-                <div class="form body"><input type="text" name="textBody" placeholder="Comment"></div>
-                <div class="flex justify-center m-4"><input class="btn" type="submit" value="Comment"></div>
+        <div class="isolate bg-gray-900 px-6 py-12 sm:py-16 lg:px-8">
+            <div aria-hidden="true"
+                class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
+            </div>
+            <div class="mx-auto max-w-2xl text-center">
+                <h2 class="text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl">Add comment</h2>
+            </div>
+
+            <form action="/comment/<%= index %>" method="POST" class="mx-auto mt-8 max-w-xl sm:mt-10">
+                <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <label for="articleTitle" class="block text-sm/6 font-semibold text-white">Username</label>
+                        <div class="mt-2.5">
+                            <input id="articleTitle" type="text" name="username" placeholder="Enter your username"
+                                class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base
+                                        text-white outline-1 -outline-offset-1 outline-white/10
+                                        placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2
+                                        focus:outline-indigo-500" />
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label for="textBody" class="block text-sm/6 font-semibold text-white">Comment</label>
+                        <div class="mt-2.5">
+                            <textarea id="textBody" name="textBody" rows="6"
+                                placeholder="Write your comment here..."
+                                class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-10">
+                    <button type="submit"
+                        class="block w-full rounded-md bg-indigo-500 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                        Post
+                    </button>
+                </div>
             </form>
-        </main>
+        </div>
 
         <footer class="mt-auto">
             <%- include("partials/footer.ejs") %>
@@ -26,3 +56,4 @@
 </body>
 
 </html>
+
