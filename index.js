@@ -16,6 +16,8 @@ let articles = [
     likes: 0
   }
 ]
+
+let user = "";
 const app = express();
 const port = 3000;
 
@@ -24,11 +26,11 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.render("index.ejs", {article: articles})
+  res.render("index.ejs", {article: articles, user: user})
 });
 
 app.get("/create", (req, res) =>{
-  res.render("create.ejs")
+  res.render("create.ejs", {user: user})
 });
 
 app.get("/create/:id", (req, res) =>{
@@ -36,7 +38,7 @@ app.get("/create/:id", (req, res) =>{
   console.log(id);
   
   if (id) {
-    res.render("create.ejs", { article: articles, index: id });
+    res.render("create.ejs", { article: articles, index: id, user: user });
   } else {
     res.status(404).send("Article not found");
   }
@@ -47,7 +49,7 @@ app.get("/comment/:id", (req, res) =>{
   console.log(articles[id]);
   
   if (id) {
-    res.render("comment.ejs", {index: id });
+    res.render("comment.ejs", {index: id, user: user });
   } else {
     res.status(404).send("Article not found");
   }
@@ -56,7 +58,7 @@ app.get("/comment/:id", (req, res) =>{
 app.post("/submit", (req, res) => {
   console.log(req.body);
   addArticles(req.body["articleTitle"], req.body["textBody"])
-  res.render("index.ejs", {article: articles})
+  res.render("index.ejs", {article: articles, user: user})
 });
 
 app.post("/update/:id", (req, res) => {
@@ -103,7 +105,7 @@ app.post("/like/:id", (req, res) => {
 app.get("/view/:id", (req, res) => {
   const id = req.params.id;
   if (id) {
-    res.render("view.ejs", { article: articles, index: id });
+    res.render("view.ejs", { article: articles, index: id, user: user });
   } else {
     res.status(404).send("Article not found");
   }
@@ -112,6 +114,20 @@ app.get("/view/:id", (req, res) => {
 app.get("/delete/:id", (req, res) => {
   const id = req.params.id;
   articles.splice(id, 1);
+  res.redirect("/");
+});
+
+app.get("/login", (req, res) => {
+  res.render("login.ejs", {user: user})
+});
+
+app.post("/login", (req, res) => {
+  user = req.body.user;
+  res.redirect("/");
+});
+
+app.get("/logout", (req, res) => {
+  user = "";
   res.redirect("/");
 });
 

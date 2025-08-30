@@ -9,7 +9,14 @@
         </div>
         
         <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-            <a href="#" class="text-sm/6 font-semibold text-white">Log in <span aria-hidden="true">&rarr;</span></a>
+            <% if (locals.user && user !== "") { %>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm/6 font-semibold text-white">Welcome, <%= user %>!</span>
+                    <a href="/logout" class="text-sm/6 font-semibold text-indigo-400 hover:text-indigo-300">Logout</a>
+                </div>
+            <% } else { %>
+                <a href="/login" class="text-sm/6 font-semibold text-white">Log in <span aria-hidden="true">&rarr;</span></a>
+            <% } %>
         </div>
     </nav>
 </header>
