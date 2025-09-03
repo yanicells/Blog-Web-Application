@@ -25,9 +25,9 @@
             </div>
 
             <%if(locals.index){%>
-                <form action="/update/<%= index %>" method="POST" class="mx-auto mt-8 max-w-xl sm:mt-10">
+                <form action="/update/<%= index %>" method="POST" enctype="multipart/form-data" class="mx-auto mt-8 max-w-xl sm:mt-10">
                     <%}else{%>
-                        <form action="/submit" method="POST" class="mx-auto mt-8 max-w-xl sm:mt-10">
+                        <form action="/submit" method="POST" enctype="multipart/form-data" class="mx-auto mt-8 max-w-xl sm:mt-10">
                             <%}%>
                                 <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
                                     <div class="sm:col-span-2">
@@ -53,6 +53,18 @@
                             placeholder="Write your post content here..."
                             class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"><%if(locals.index){%><%= article[index].body%><%}%></textarea>
                                         </div>
+                                    </div>
+
+                                    <div class="sm:col-span-2">
+                                        <label for="image" class="block text-sm/6 font-semibold text-white">Cover Image (optional)</label>
+                                        <div class="mt-2.5">
+                                            <input id="image" type="file" name="image" accept="image/*"
+                                                class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500" />
+                                        </div>
+                                        <% if(locals.index && article[index].imagePath){ %>
+                                            <p class="mt-2 text-sm text-gray-400">Current image:</p>
+                                            <img src="<%= article[index].imagePath %>" alt="Current cover" class="mt-2 max-h-40 rounded-md border border-gray-700" />
+                                        <% } %>
                                     </div>
 
                                 </div>
