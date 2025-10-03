@@ -4,8 +4,6 @@ import { localsName } from "ejs";
 import multer from "multer";
 import path from "path";
 
-
-
 let user = "";
 const app = express();
 const port = 3000;
