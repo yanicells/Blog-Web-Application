@@ -106,10 +106,6 @@ app.get("/comment/:id", (req, res) => {
 });
 
 app.post("/submit", upload.single("image"), (req, res) => {
-  console.log(req.body);
-  console.log(req.body.articleTitle);
-  console.log(req.body.textBody);
-
   const uploadedImagePath = req.file ? "/images/" + req.file.filename : "";
   addArticles(
     req.body["articleTitle"],
@@ -124,8 +120,6 @@ app.post("/update/:id", upload.single("image"), (req, res) => {
   if (!Number.isInteger(id) || !articles[id]) {
     return res.status(404).send("Article not found");
   }
-
-  console.log(articles[id].id);
 
   const currentImagePath = articles[id].imagePath || "";
   const newImagePath = req.file
@@ -146,7 +140,6 @@ app.post("/comment/:id", (req, res) => {
   const id = req.params.id;
   addComment(articles[id].id, req.body.textBody);
 
-  console.log(articles);
   res.redirect(`/view/${id}`);
 });
 
@@ -182,8 +175,6 @@ app.post("/search", async (req, res) => {
       article.title.toLowerCase().includes(query) ||
       article.authorName.toLowerCase().includes(query)
   );
-
-  console.log(filteredArticles);
 
   res.render("index.ejs", { article: filteredArticles });
 });
@@ -223,7 +214,6 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  console.log(req.body);
   const isValid = await validateUser(req.body.user, req.body.password);
   if (isValid) {
     userID = await getUserID(req.body.user);
@@ -338,7 +328,6 @@ async function validateUser(username, password) {
       username,
     ]);
     if (result.rows.length > 0) {
-      console.log(result.rows.length);
       const user = result.rows[0];
       if (user.password_hash === password) {
         return true;
@@ -363,7 +352,6 @@ async function getUserID(username) {
     const result = await db.query("SELECT * FROM users WHERE username = $1", [
       username,
     ]);
-    console.log(result.rows);
 
     if (result.rows.length > 0) {
       return result.rows[0].id;
