@@ -7,11 +7,13 @@ import path from "path";
 import { fileURLToPath } from "url"; // Add this
 import { dirname } from "path"; // Add this
 import pg from "pg";
+import { resourceUsage } from "process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 let user = "";
+let userID = -1;
 const app = express();
 const port = 3000;
 
@@ -57,7 +59,6 @@ const upload = multer({ storage: storage });
 
 app.get("/", async (req, res) => {
   articles = await queryArticles()
-  console.log(articles[0].image_url);
   
   res.render("index.ejs", { article: articles, user: user });
 });
@@ -86,7 +87,6 @@ app.get("/create/:id", (req, res) => {
 
 app.get("/comment/:id", (req, res) => {
   const id = req.params.id;
-  console.log(articles[id]);
 
   if (id) {
     if (user !== "") {
@@ -101,13 +101,16 @@ app.get("/comment/:id", (req, res) => {
 
 app.post("/submit", upload.single("image"), (req, res) => {
   console.log(req.body);
+  console.log(req.body.articleTitle);
+  console.log(req.body.textBody);
+  
   const uploadedImagePath = req.file ? "/images/" + req.file.filename : "";
   addArticles(
     req.body["articleTitle"],
     req.body["textBody"],
     uploadedImagePath
   );
-  res.render("index.ejs", { article: articles, user: user });
+  res.redirect("/");
 });
 
 app.post("/update/:id", upload.single("image"), (req, res) => {
@@ -183,9 +186,19 @@ app.get("/login", (req, res) => {
   res.render("login.ejs", { user: user });
 });
 
-app.post("/login", (req, res) => {
-  user = req.body.user;
-  res.redirect("/");
+app.post ("/login", async (req, res) => {
+  console.log(req.body);
+  const isValid = await validateUser(req.body.user, req.body.password);
+  if (isValid){
+    userID = await getUserID(req.body.user);
+    if(user === -1){
+      return res.redirect("/login");
+    }
+    user = req.body.user;
+    res.redirect("/");
+  } else{
+    res.redirect("/login");
+  }
 });
 
 app.get("/logout", (req, res) => {
@@ -197,14 +210,60 @@ app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 
-function addArticles(titleArticle, bodyArticle, imagePath) {
-  articles.push({
-    title: titleArticle,
-    body: bodyArticle,
-    comment: [],
-    likes: 0,
-    imagePath: imagePath || "",
-  });
+
+async function addArticles(titleArticle, bodyArticle, imagePath) {
+  try {
+    const result = await db.query(
+      "INSERT INTO articles (title, body, image_url, author_id) VALUES ($1, $2, $3, $4) RETURNING *",
+      [titleArticle, bodyArticle, imagePath || "", userID]
+    );
+    console.log("Article added:", result.rows[0]);
+    articles = await queryArticles();
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function validateUser(username, password) {
+  try {
+    const result = await db.query("SELECT * FROM users WHERE username = $1", [
+      username,
+    ]);
+    if (result.rows.length > 0){
+      console.log(result.rows.length);
+      const user = result.rows[0];
+      if(user.password_hash === password){
+        return true;
+      } else{
+        return false;
+      }
+    } else{
+      await db.query(
+        "INSERT INTO users (username, password_hash) VALUES ($1, $2)",
+        [username, password]
+      );
+      return true;
+    }
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+async function getUserID(username){
+try {
+  const result = await db.query("SELECT * FROM users WHERE username = $1", [
+    username]);
+    console.log(result.rows);
+
+    if(result.rows.length > 0){
+      return result.rows[0].id;
+    } else {
+      return -1
+    }
+} catch (err) {
+  console.log(err);
+}
 }
 
 async function queryArticles() {
