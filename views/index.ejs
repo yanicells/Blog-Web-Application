@@ -11,20 +11,47 @@
 <body class="min-h-screen flex flex-col bg-gray-900">
     <%- include("partials/header.ejs") %>
 
-    <div class="bg-gray-900 py-12 sm:py-18">
+    <div class="bg-gray-900 pb-16 pt-8 sm:pb-24 sm:pt-12">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
-            <div class="mx-auto max-w-2xl lg:mx-0">
-                <h2 class="text-4xl font-semibold tracking-tight text-pretty text-white sm:text-6xl">From the blog</h2>
-                <p class="mt-2 text-lg/8 text-gray-300">Learn how to grow your business with our expert advice.</p>
-                <a href="/create">
-                    <button type="button"
-                        class="py-2.5 px-5 me-2 mt-6 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Create
-                        Post</button>
-                </a>
-                
+            <div class="mx-auto max-w-full lg:mx-0 text-center lg:text-left">
+                <h1 class="text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
+                    From the Blog
+                </h1>
+                <p class="mt-8 text-xl leading-8 text-gray-300 max-w-2xl">
+                    Discover insights, stories, and expert perspectives that matter. 
+                    Join our community of writers and readers sharing knowledge.
+                </p>
+                <div class="mt-10 flex items-center justify-between gap-x-6">
+                    <a href="/create"
+                        class="group relative inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                        <svg class="w-5 h-5 mr-2 transition-transform group-hover:scale-110" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Create Post
+                    </a>
+
+                    <form method="POST" action="/search" class="w-full lg:w-96 pt-10 lg:pt-0">
+                        <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <!-- SVG icon -->
+                            </div>
+                            <input type="search" name="query" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50
+                                      focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+                                      dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Articles, Authors..."
+                                required />
+                            <button type="submit" 
+                                class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none 
+                                       focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                Search
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
             </div>
 
-            
             <div
                 class="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-700 pt-5 sm:mt-8 sm:pt-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
 

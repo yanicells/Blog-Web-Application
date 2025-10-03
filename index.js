@@ -152,16 +152,40 @@ app.post("/comment/:id", (req, res) => {
 
 app.get("/like/:id", (req, res) => {
   const id = req.params.id;
-
+  if (user === "") {
+    return res.render("login.ejs");
+  }
   addLikes(articles[id].id);
   res.redirect(`/view/${id}`);
 });
 
 app.post("/like/:id", (req, res) => {
   const id = req.params.id;
-
+  if (user === "") {
+    return res.render("login.ejs");
+  }
   addLikes(articles[id].id);
   res.redirect(`/view/${id}`);
+});
+
+app.post("/search", async (req, res) => {
+  const query = req.body.query.toLowerCase();
+  articles = await queryArticles();
+
+  // Get author names for each article
+  for (let i = 0; i < articles.length; i++) {
+    articles[i].authorName = await getAuthor(articles[i].id);
+  }
+
+  const filteredArticles = articles.filter(
+    (article) =>
+      article.title.toLowerCase().includes(query) ||
+      article.authorName.toLowerCase().includes(query)
+  );
+
+  console.log(filteredArticles);
+
+  res.render("index.ejs", { article: filteredArticles });
 });
 
 app.get("/view/:id", async (req, res) => {
