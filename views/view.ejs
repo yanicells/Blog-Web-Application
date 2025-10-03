@@ -16,7 +16,7 @@
             
             <div class="text-center mb-2">
                 <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-                    <%= article[index].title %>
+                    <%= article.title %>
                 </h1>
                 <div class="flex items-center justify-center space-x-4 text-gray-400 text-sm">
                     <span class="flex items-center">
@@ -38,13 +38,13 @@
     <section class="bg-gray-900 py-8">
         <div class="mx-auto max-w-4xl px-4">
             <div class="bg-gray-800 rounded-xl p-8 lg:p-12 shadow-xl border border-gray-700">
-                <% if(article[index].imagePath){ %>
-                <img src="<%= article[index].imagePath %>" alt="Cover image for <%= article[index].title %>" class="mb-8 w-full max-h-[28rem] object-cover rounded-lg border border-gray-700" />
+                <% if(article.image_url){ %>
+                <img src="<%= article.image_url %>" alt="Cover image for <%= article.title %>" class="mb-8 w-full max-h-[28rem] object-cover rounded-lg border border-gray-700" />
                 <% } %>
                 <div class="prose prose-lg prose-invert max-w-none">
                     <% 
                     // Split the article body into paragraphs and format them properly
-                    const paragraphs = article[index].body.split('. ').filter(p => p.trim().length > 0);
+                    const paragraphs = article.body.split('. ').filter(p => p.trim().length > 0);
                     paragraphs.forEach((paragraph, pIndex) => {
                         if (pIndex < paragraphs.length - 1) {
                             // Add period back for all paragraphs except the last one
@@ -69,7 +69,7 @@
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/>
                     </svg>
-                    <%= article[index].likes%> Likes
+                    <%= likes %> Likes
                 </a>
 
                 <%if(index==0 || index==1 || index==2 || index==3) {%>
@@ -97,24 +97,24 @@
     <section class="bg-gray-900 pb-8 lg:pb-12">
         <div class="mx-auto max-w-4xl px-4">
             
-            <% if(article[index].comment.length > 0) { %>
+            <% if(comments.length > 0) { %>
                 <div class="text-center mb-8">
                     <h2 class="text-3xl font-bold text-white mb-2">
                         Comments
                     </h2>
                     <p class="text-gray-400">
-                        Join the conversation with <%= article[index].comment.length %> comment<%= article[index].comment.length !==1
+                        Join the conversation with <%= comments.length %> comment<%= comments.length !==1
                                 ? 's' : '' %>
                     </p>
                 </div>
                 <div class="space-y-6">
-                    <% article[index].comment.forEach((comment, commentIndex) => { %>
+                    <% comments.forEach((comment, commentIndex) => { %>
                         <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700">
                             <div class="flex items-start space-x-4">
                                 <div class="flex-shrink-0">
                                     <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                                         <span class="text-white font-semibold text-sm">
-                                            <%= comment.username.charAt(0).toUpperCase() %>
+                                            <%= comments[commentIndex].author_id %>
                                         </span>
                                     </div>
                                 </div>
@@ -122,7 +122,7 @@
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center space-x-2 mb-2">
                                         <h4 class="text-sm font-semibold text-white">
-                                            <%= comment.username %>
+                                            <%= comments[commentIndex].author_id %>
                                         </h4>
                                         <span class="text-xs text-gray-400">
                                             • <%= new Date().toLocaleDateString('en-US', { 
@@ -135,7 +135,7 @@
                                         </span>
                                     </div>
                                     <p class="text-gray-300 text-sm leading-relaxed">
-                                        <%= comment.textBody %>
+                                        <%= comments[commentIndex].content %>
                                     </p>
                                 </div>
                             </div>

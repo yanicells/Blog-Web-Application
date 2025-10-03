@@ -32,9 +32,9 @@
                     <% for(let i=0; i < article.length; i++){ %>
 
                 <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-                    <% if(article[i].imagePath){ %>
+                    <% if(article[i].image_url){ %>
                     <a href="/view/<%= i %>">
-                        <img class="rounded-t-lg w-full object-cover" src="<%= article[i].imagePath %>" alt="Cover image for <%= article[i].title %>" />
+                        <img class="rounded-t-lg w-full object-cover" src="<%= article[i].image_url %>" alt="Cover image for <%= article[i].title %>" />
                     </a>
                     <% } %>
                     <div class="p-5">

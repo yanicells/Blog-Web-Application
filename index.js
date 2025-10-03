@@ -55,7 +55,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  articles = await queryArticles()
+  console.log(articles[0].image_url);
+  
   res.render("index.ejs", { article: articles, user: user });
 });
 
@@ -155,10 +158,16 @@ app.post("/like/:id", (req, res) => {
   res.redirect(`/view/${id}`);
 });
 
-app.get("/view/:id", (req, res) => {
+app.get("/view/:id", async(req, res) => {
   const id = req.params.id;
   if (id) {
-    res.render("view.ejs", { article: articles, index: id, user: user });
+    const articles = await queryArticles();
+    const comments = await queryComments(id);
+    const likes = await queryLikes(id);
+    const likesCount = likes.length;
+    console.log(articles);
+
+    res.render("view.ejs", { article: articles[id], comments: comments, likes: likesCount, index: id, user: user });
   } else {
     res.status(404).send("Article not found");
   }
@@ -196,6 +205,41 @@ function addArticles(titleArticle, bodyArticle, imagePath) {
     likes: 0,
     imagePath: imagePath || "",
   });
+}
+
+async function queryArticles() {
+  try {
+    const result = await db.query("SELECT * FROM articles");
+    let articles = result.rows;
+    return articles;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function queryComments(id) {
+  articles = await queryArticles();
+  try {
+    const result = await db.query("SELECT * FROM comments WHERE article_id = $1", [articles[id].id]);
+    let comments = result.rows;
+    return comments;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function queryLikes(id) {
+  articles = await queryArticles();
+  try {
+    const result = await db.query(
+      "SELECT * FROM likes WHERE article_id = $1",
+      [articles[id].id]
+    );
+    let likes = result.rows;
+    return likes;
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 let articles = [
