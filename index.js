@@ -59,9 +59,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.get("/", async (req, res) => {
-  articles = await queryArticles()
-  
-  res.render("index.ejs", { article: articles});
+  articles = await queryArticles();
+
+  // Get author names for each article
+  for (let i = 0; i < articles.length; i++) {
+    articles[i].authorName = await getAuthor(articles[i].id);
+  }
+
+  res.render("index.ejs", { article: articles });
 });
 
 app.get("/create", (req, res) => {
@@ -104,7 +109,7 @@ app.post("/submit", upload.single("image"), (req, res) => {
   console.log(req.body);
   console.log(req.body.articleTitle);
   console.log(req.body.textBody);
-  
+
   const uploadedImagePath = req.file ? "/images/" + req.file.filename : "";
   addArticles(
     req.body["articleTitle"],
@@ -126,7 +131,7 @@ app.post("/update/:id", upload.single("image"), (req, res) => {
   const newImagePath = req.file
     ? "/images/" + req.file.filename
     : currentImagePath;
-  
+
   editArticles(
     articles[id].id,
     req.body["articleTitle"],
@@ -159,7 +164,7 @@ app.post("/like/:id", (req, res) => {
   res.redirect(`/view/${id}`);
 });
 
-app.get("/view/:id", async(req, res) => {
+app.get("/view/:id", async (req, res) => {
   const id = req.params.id;
   if (id) {
     const articles = await queryArticles();
@@ -168,7 +173,16 @@ app.get("/view/:id", async(req, res) => {
     const likesCount = likes.length;
     const author = await getAuthor(articles[id].id);
 
-    res.render("view.ejs", { article: articles[id], comments: comments, likes: likesCount, index: id, user: user, author: author, authorID: articles[id].author_id, userID: userID });
+    res.render("view.ejs", {
+      article: articles[id],
+      comments: comments,
+      likes: likesCount,
+      index: id,
+      user: user,
+      author: author,
+      authorID: articles[id].author_id,
+      userID: userID,
+    });
   } else {
     res.status(404).send("Article not found");
   }
@@ -184,17 +198,17 @@ app.get("/login", (req, res) => {
   res.render("login.ejs", { user: user });
 });
 
-app.post ("/login", async (req, res) => {
+app.post("/login", async (req, res) => {
   console.log(req.body);
   const isValid = await validateUser(req.body.user, req.body.password);
-  if (isValid){
+  if (isValid) {
     userID = await getUserID(req.body.user);
-    if(user === -1){
+    if (user === -1) {
       return res.redirect("/login");
     }
     user = req.body.user;
     res.redirect("/");
-  } else{
+  } else {
     res.redirect("/login");
   }
 });
@@ -270,13 +284,17 @@ async function addComment(article_id, textBody) {
   }
 }
 
-async function getAuthor(article_id){
+async function getAuthor(article_id) {
   try {
-    const result = await db.query("SELECT * FROM articles WHERE id = $1", [article_id]);
-    if(result.rows.length > 0){
+    const result = await db.query("SELECT * FROM articles WHERE id = $1", [
+      article_id,
+    ]);
+    if (result.rows.length > 0) {
       const author_id = result.rows[0].author_id;
-      const userResult = await db.query("SELECT * FROM users WHERE id = $1", [author_id]);
-      if(userResult.rows.length > 0){
+      const userResult = await db.query("SELECT * FROM users WHERE id = $1", [
+        author_id,
+      ]);
+      if (userResult.rows.length > 0) {
         return userResult.rows[0].username;
       } else {
         return "Unknown";
@@ -295,15 +313,15 @@ async function validateUser(username, password) {
     const result = await db.query("SELECT * FROM users WHERE username = $1", [
       username,
     ]);
-    if (result.rows.length > 0){
+    if (result.rows.length > 0) {
       console.log(result.rows.length);
       const user = result.rows[0];
-      if(user.password_hash === password){
+      if (user.password_hash === password) {
         return true;
-      } else{
+      } else {
         return false;
       }
-    } else{
+    } else {
       await db.query(
         "INSERT INTO users (username, password_hash) VALUES ($1, $2)",
         [username, password]
@@ -316,20 +334,21 @@ async function validateUser(username, password) {
   }
 }
 
-async function getUserID(username){
-try {
-  const result = await db.query("SELECT * FROM users WHERE username = $1", [
-    username]);
+async function getUserID(username) {
+  try {
+    const result = await db.query("SELECT * FROM users WHERE username = $1", [
+      username,
+    ]);
     console.log(result.rows);
 
-    if(result.rows.length > 0){
+    if (result.rows.length > 0) {
       return result.rows[0].id;
     } else {
-      return -1
+      return -1;
     }
-} catch (err) {
-  console.log(err);
-}
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 async function queryArticles() {
@@ -345,7 +364,16 @@ async function queryArticles() {
 async function queryComments(id) {
   articles = await queryArticles();
   try {
-    const result = await db.query("SELECT * FROM comments WHERE article_id = $1", [articles[id].id]);
+    const result = await db.query(
+      `
+      SELECT c.*, u.username 
+      FROM comments c 
+      JOIN users u ON c.author_id = u.id 
+      WHERE c.article_id = $1 
+      ORDER BY c.created_at ASC
+    `,
+      [articles[id].id]
+    );
     let comments = result.rows;
     return comments;
   } catch (err) {
@@ -356,10 +384,9 @@ async function queryComments(id) {
 async function queryLikes(id) {
   articles = await queryArticles();
   try {
-    const result = await db.query(
-      "SELECT * FROM likes WHERE article_id = $1",
-      [articles[id].id]
-    );
+    const result = await db.query("SELECT * FROM likes WHERE article_id = $1", [
+      articles[id].id,
+    ]);
     let likes = result.rows;
     return likes;
   } catch (err) {

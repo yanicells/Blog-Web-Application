@@ -21,9 +21,16 @@
                 <div class="flex items-center justify-center space-x-4 text-gray-400 text-sm">
                     <span class="flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        By <%= author %>
+                    </span>
+                    <span>•</span>
+                    <span class="flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <%= new Date().toLocaleDateString('en-US', { 
+                        <%= new Date(article.created_at).toLocaleDateString('en-US', { 
                             year: 'numeric', 
                             month: 'long', 
                             day: 'numeric' 
@@ -54,7 +61,6 @@
                         <p class="text-gray-300 text-lg leading-relaxed mb-6 last:mb-0">
                             <%= paragraph %>
                         </p>
-                        <p>by <%= author %></p>
                     <% }); %>
                 </div>
             </div>
@@ -115,7 +121,7 @@
                                 <div class="flex-shrink-0">
                                     <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                                         <span class="text-white font-semibold text-sm">
-                                            <%= comments[commentIndex].author_id %>
+                                            <%= comments[commentIndex].username.charAt(0).toUpperCase() %>
                                         </span>
                                     </div>
                                 </div>
@@ -123,10 +129,10 @@
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center space-x-2 mb-2">
                                         <h4 class="text-sm font-semibold text-white">
-                                            <%= comments[commentIndex].author_id %>
+                                            <%= comments[commentIndex].username %>
                                         </h4>
                                         <span class="text-xs text-gray-400">
-                                            • <%= new Date().toLocaleDateString('en-US', { 
+                                            • <%= new Date(comments[commentIndex].created_at).toLocaleDateString('en-US', { 
                                                 month: 'short', 
                                                 day: 'numeric', 
                                                 year: 'numeric',
