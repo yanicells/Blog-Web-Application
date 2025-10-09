@@ -19,7 +19,7 @@ A blog web application where users can create, read, and interact with blog post
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yanicells/Blog-Web-Application.git
+git clone https://github.com/yanicells/Blogcells.git
 cd blog-web-application
 ```
 
