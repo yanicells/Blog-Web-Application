@@ -1,13 +1,12 @@
 import "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
-import { localsName } from "ejs";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url"; // Add this
 import { dirname } from "path"; // Add this
 import pg from "pg";
-import { resourceUsage } from "process";
+import bycrpt from "bcrypt";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -66,7 +65,7 @@ app.get("/", async (req, res) => {
     articles[i].authorName = await getAuthor(articles[i].id);
   }
 
-  res.render("index.ejs", { article: articles });
+  res.render("index.ejs", { article: articles, user: user });
 });
 
 app.get("/create", (req, res) => {
@@ -176,7 +175,7 @@ app.post("/search", async (req, res) => {
       article.authorName.toLowerCase().includes(query)
   );
 
-  res.render("index.ejs", { article: filteredArticles });
+  res.render("index.ejs", { article: filteredArticles, user: user });
 });
 
 app.get("/view/:id", async (req, res) => {
@@ -217,7 +216,7 @@ app.post("/login", async (req, res) => {
   const isValid = await validateUser(req.body.user, req.body.password);
   if (isValid) {
     userID = await getUserID(req.body.user);
-    if (user === -1) {
+    if (userID === -1) {
       return res.redirect("/login");
     }
     user = req.body.user;
@@ -229,6 +228,7 @@ app.post("/login", async (req, res) => {
 
 app.get("/logout", (req, res) => {
   user = "";
+  userID = -1;
   res.redirect("/");
 });
 
@@ -328,16 +328,15 @@ async function validateUser(username, password) {
       username,
     ]);
     if (result.rows.length > 0) {
-      const user = result.rows[0];
-      if (user.password_hash === password) {
-        return true;
-      } else {
-        return false;
-      }
+      const userRow = result.rows[0];
+      const password_hash = userRow.password_hash;
+      const match = await bycrpt.compare(password, password_hash);
+      return match;
     } else {
+      const hash = await bycrpt.hash(password, 10);
       await db.query(
         "INSERT INTO users (username, password_hash) VALUES ($1, $2)",
-        [username, password]
+        [username, hash]
       );
       return true;
     }
