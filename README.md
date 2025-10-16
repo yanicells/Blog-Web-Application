@@ -1,6 +1,6 @@
 # Blogcells
 
-A blog web application where users can create, read, and interact with blog posts through comments and likes. Built with a clean, responsive design that allows writers to share their thoughts and readers to engage with content. A demo of the app can be found through this link [https://drive.google.com/file/d/1RS3xFCqgAiJHtbu3laanLfSTznuTugma/view].
+A blog web application where users can create, read, and interact with blog posts through comments and likes. Built with a clean, responsive design that allows writers to share their thoughts and readers to engage with content. A demo of the app can be found through this link [https://drive.google.com/file/d/1RS3xFCqgAiJHtbu3laanLfSTznuTugma/view]
 
 ## Tech Stack
 
